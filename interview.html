@@ -1,0 +1,126 @@
+<html>
+	<head>
+		<title>Interview</title>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="jumbotron">
+						<h1>Flatlanders</h1>
+						<h4>Buy all your gems and gem accessories here!</h4>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h1>Items to Buy</h1>
+					<table class="table table-bordered table-striped" id="gemTable">
+						<thead>
+							<tr>
+								<th>Item</th>
+								<th>Quantity in stock</th>
+								<th>Price</th>
+								<th>Buy</th>
+							</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h1>Items Purchased</h1>
+					<table class="table table-bordered table-striped" id="purchasedItems">
+						<thead>
+							<tr>
+								<th>Item</th>
+								<th>Quantity purchased</th>
+								<th>Price</th>
+								<th>Buy</th>
+							</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+		<script type="text/javascript">
+			var gems = [
+				{item: "Ruby", quantity: 15, price: 3499.98, index: 0},
+				{item: "Diamond", quantity: 10, price: 8753.98, index: 1},
+				{item: "Emerald", quantity: 87, price: 2343.98, index: 2},
+				{item: "Crystal", quantity: 34, price: 123.98, index: 3},
+				{item: "Gold", quantity: 105, price: 6735.98, index: 4}
+			]
+			var purchasedItems = [];
+
+			$( document ).ready(function() {
+			    addGemsToTable();
+			});
+
+			function addGemsToTable() {
+				for (var i = 0; i < gems.length; i++) {
+					var btn = "<button class='btn btn-primary' onClick=buy('" + gems[i].index + "') id='"+gems[i].item+ "_buyButton'>Buy!</button>";
+					var tr = "<tr><td>" + gems[i].item + "</td><td id='"+gems[i].item+"_quantity'>" + gems[i].quantity + "</td><td>" + gems[i].price + "</td><td>" + btn + "</td></tr>";
+					$("#gemTable > tbody:last").append(tr);
+				}
+			}
+
+			function buy(index) {
+				var btn = "<button class='btn btn-danger' onClick=sell('" + index + "')>Sell!</button>";
+				var gemName = gems[index].item;
+				var gemPrice = gems[index].price;
+
+				if (typeof purchasedItems[gemName] !== 'undefined'){
+					purchasedItems[gemName].numberPurchased = purchasedItems[gemName].numberPurchased + 1;
+					$("#" + gemName + "_numberPurchased").html(purchasedItems[gemName].numberPurchased);
+				} else {
+					purchasedItems[gemName] = {
+						item: gemName,
+						price: gemPrice,
+						numberPurchased: 1
+					}
+					var tr = "<tr id='"+gemName+"_purchasedRow'><td>" + gemName + "</td><td id='"+gemName+"_numberPurchased'>" + purchasedItems[gemName].numberPurchased + "</td><td>" + gemPrice + "</td><td>" + btn + "</td></tr>";
+					$("#purchasedItems > tbody:last").append(tr);
+				}
+				
+				// also decrement the amount available for purchase
+				gems[index].quantity--;
+				$("#" + gemName + "_quantity").html(gems[index].quantity);
+				if (gems[index].quantity == 0) {
+					$("#" + gemName + "_buyButton").prop("disabled",true);
+				}
+			}
+
+			function sell(index) {
+				var gemName = gems[index].item;
+				gems[index].quantity++;
+				$("#" + gemName + "_buyButton").prop("disabled",false);
+				$("#" + gemName + "_quantity").html(gems[index].quantity);
+
+				purchasedItems[gemName].numberPurchased--;
+				$("#" + gemName + "_numberPurchased").html(purchasedItems[gemName].numberPurchased);
+
+				if (purchasedItems[gemName].numberPurchased == 0) {
+					purchasedItems[gemName] = undefined;
+					$("#" + gemName + "_purchasedRow").remove();
+				}
+			}
+		</script>
+	</body>
+</html>
