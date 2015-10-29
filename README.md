@@ -1,2 +1,2 @@
 # flatlanders_store_jquery
-A quick interview question and answer
+Playing around with testing the differences between jQuery and AngularJS
